@@ -4,34 +4,45 @@
 > instructions before submitting.
 
 ## 1. What I changed
+
 <!-- Grouped by task: bugs fixed and features implemented (component + template). -->
 
 -
 
 ## 2. Component & state model
+
 <!-- The screens, the view-state each component exposes, and how data flows from the mock API into the
 template. -->
 
 -
 
 ## 3. Invariants I keep
+
 <!-- Which properties the UI guarantees, and where in the component/template each is enforced. -->
 
 | Invariant | How / where |
-|---|---|
+| --------- | ----------- |
 
 ## 4. Testing strategy
+
 <!-- What you tested (component/DOM vs pure) and why; what you deliberately skipped given the budget. -->
 
 -
 
 ## 5. Assumptions
+
 <!-- Where the requirements left room for interpretation, the calls you made and why. -->
 
--
+Task 1 - Assumptions:
+
+- diff calculations are based on unitPrice and quantity only
+- Read-only cannot approve, & cannot reject (this may not be expliceitly stated in the tasks given, but I implemented it.)
+- Approve/Reject as the same approval authority in terms of policies given the table.
 
 ## 6. Where I used AI
--
+
+- help with automatic commit messages (I always make sure it's comprehensive)
 
 ## 7. What I'd improve with more time
+
 -

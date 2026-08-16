@@ -21,13 +21,17 @@ export function computeDiff(baseline: LineItem[], proposed: LineItem[]): DiffRow
 	const proposedBySku = new Map(proposed.map((p) => [p.sku, p]));
 	const baselineBySku = new Map(baseline.map((b) => [b.sku, b]));
 
+	// my lines start
+	// console.log(proposedBySku);
+	// console.log(baselineBySku);
+	// my lines end
 	for (const b of baseline) {
 		const p = proposedBySku.get(b.sku);
 		if (!p) {
 			rows.push({ sku: b.sku, kind: 'removed', baseline: b });
 			continue;
 		}
-		const changed = b.unitPrice !== p.unitPrice;
+		const changed = b.unitPrice !== p.unitPrice || b.quantity !== p.quantity; // MINE - added => || b.quantity !== p.quantity
 		rows.push({ sku: b.sku, kind: changed ? 'changed' : 'unchanged', baseline: b, proposed: p });
 	}
 	for (const p of proposed) {
