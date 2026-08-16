@@ -21,10 +21,6 @@ export function computeDiff(baseline: LineItem[], proposed: LineItem[]): DiffRow
 	const proposedBySku = new Map(proposed.map((p) => [p.sku, p]));
 	const baselineBySku = new Map(baseline.map((b) => [b.sku, b]));
 
-	// my lines start
-	// console.log(proposedBySku);
-	// console.log(baselineBySku);
-	// my lines end
 	for (const b of baseline) {
 		const p = proposedBySku.get(b.sku);
 		if (!p) {
