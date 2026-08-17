@@ -27,8 +27,14 @@ template. -->
 
 <!-- Which properties the UI guarantees, and where in the component/template each is enforced. -->
 
-| Invariant | How / where |
-| --------- | ----------- |
+| Invariant                                                           | How / where                                              |
+| ------------------------------------------------------------------- | -------------------------------------------------------- |
+| Only `PENDING_APPROVAL` CRs can be approved or rejected             | `canApprove` / `canReject` in `cr-detail.component`      |
+| Users without approval authority cannot approve or reject           | Approval permission helpers + `canApprove` / `canReject` |
+| The original audit array is not modified when ordering the timeline | `timeline` getter sorts a copied array                   |
+| Status filtering only returns rows matching the selected status     | `visibleRows` getter                                     |
+| Loading and error states do not render the main CR content          | Detail template state checks                             |
+| Reject cannot proceed without a valid reason                        | `rejectControl` validation and Reject button state       |
 
 ## 4. Testing strategy
 
