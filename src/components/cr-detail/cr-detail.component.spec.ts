@@ -31,4 +31,60 @@ describe('CrDetailComponent', () => {
 		const approveBtn: HTMLButtonElement = fixture.nativeElement.querySelector('.cr-actions__approve');
 		expect(approveBtn.disabled).toBe(true);
 	});
+
+	// my added tests
+	it('reject button not rendered for a read-only viewer on a pending CR', async () => {
+		const fixture = await render(users.viewer, 'CR-1'); // viewer: cr_r_o only; CR-1 is PENDING_APPROVAL
+		const rejectBtn: HTMLButtonElement = fixture.nativeElement.querySelector('.cr-actions__reject-btn');
+		expect(rejectBtn).toBeNull();
+	});
+
+	it('disables Reject button for a approver if the textarea is empty on a pending CR', async () => {
+		const fixture = await render(users.approver, 'CR-1'); // approver; CR-1 is PENDING_APPROVAL
+		const rejectBtn: HTMLButtonElement = fixture.nativeElement.querySelector('.cr-actions__reject-btn');
+		expect(rejectBtn.disabled).toBe(true);
+	});
+
+	it('does not allow read-only users to approve or reject a pending CR', async () => {
+		const fixture = await render(users.viewer, 'CR-1'); // viewer: cr_r_o only; CR-1 is PENDING_APPROVAL
+		const canApprove = fixture.componentInstance.canApprove;
+		const canReject = fixture.componentInstance.canReject;
+		expect(canApprove).toBe(false);
+		expect(canReject).toBe(false);
+	});
+
+	it('does allow approver users to approve or reject a pending CR', async () => {
+		const fixture = await render(users.approver, 'CR-1'); // approver; CR-1 is PENDING_APPROVAL
+		const canApprove = fixture.componentInstance.canApprove;
+		const canReject = fixture.componentInstance.canReject;
+		expect(canApprove).toBe(true);
+		expect(canReject).toBe(true);
+	});
+
+	it('orders timeline entries chronologically', async () => {
+		const fixture = await render(users.approver, 'CR-1'); // approver; CR-1 is PENDING_APPROVAL
+		fixture.componentInstance.detail.audit = [
+			{
+				action: 'SEND_FOR_APPROVAL',
+				byUserId: 'alice',
+				at: '2026-03-02T10:00:00.000Z',
+			},
+			{
+				action: 'SUBMIT',
+				byUserId: 'alice',
+				at: '2026-03-02T09:30:00.000Z',
+			},
+			{
+				action: 'CREATE',
+				byUserId: 'alice',
+				at: '2026-03-03T11:00:00.000Z',
+			},
+		];
+
+		const sortedTimeline = fixture.componentInstance.timeline;
+
+		expect(sortedTimeline[0].at).toBe('2026-03-02T09:30:00.000Z');
+		expect(sortedTimeline[1].at).toBe('2026-03-02T10:00:00.000Z');
+		expect(sortedTimeline[2].at).toBe('2026-03-03T11:00:00.000Z');
+	});
 });
