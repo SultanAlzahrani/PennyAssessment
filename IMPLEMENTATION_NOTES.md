@@ -39,9 +39,16 @@ Task 1 - Assumptions:
 - Read-only cannot approve, & cannot reject (this may not be expliceitly stated in the tasks given, but I implemented it.)
 - Approve/Reject as the same approval authority in terms of policies given the table.
 
+Task 4 - Assumptions:
+
+- Loading, loaded, error states already implemented and working
+- For testing, i introduced fake timeouts and it loading screen is already working. Also introducing a fake error seems to make the error message to appear to let the user know that if falied to load the CR.
+- from task 1, readonly users cannot intract with the approve/reject operations but can view data safely
+
 ## 6. Where I used AI
 
 - help with automatic commit messages (I always make sure it's comprehensive)
+- research and general explanations about Angular's compontent (no code generation)
 
 ## 7. What I'd improve with more time
 

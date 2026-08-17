@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CrApiService } from '../../api/cr-api.service';
 import { SessionService } from '../../session/session.service';
 import { CrDetail, TimelineEntry } from '../../models/cr.models';
@@ -28,7 +28,10 @@ export class CrDetailComponent implements OnInit {
 	submitting = false;
 	actionError?: string;
 	// TODO: add validation so the form is invalid until a reason is entered.
-	rejectControl = new FormControl('', { nonNullable: true });
+	rejectControl = new FormControl('', {
+		nonNullable: true,
+		validators: [Validators.required],
+	});
 
 	constructor(private readonly api: CrApiService, private readonly session: SessionService) {}
 
@@ -38,6 +41,7 @@ export class CrDetailComponent implements OnInit {
 
 	async load(): Promise<void> {
 		this.state = loading();
+
 		this.actionError = undefined;
 		try {
 			const detail = await this.api.getChangeRequest(this.session.user, this.id);
@@ -80,13 +84,50 @@ export class CrDetailComponent implements OnInit {
 	}
 
 	async approve(): Promise<void> {
-		// TODO: perform the approve action through the API and reflect the outcome in the view.
-		throw new Error('approve() not implemented');
+		if (this.submitting) {
+			return;
+		}
+
+		// Now everything is validated, submit the approval
+		this.submitting = true;
+		this.actionError = '';
+
+		try {
+			const isoString = new Date().toISOString();
+			const result = await this.api.approve(this.session.user, this.id, isoString);
+			this.state = { status: 'loaded', data: result };
+		} catch (approvalError) {
+			this.actionError = approvalError instanceof Error ? approvalError.message : 'Error Happend during approval';
+		} finally {
+			this.submitting = false;
+		}
 	}
 
 	async reject(): Promise<void> {
-		// TODO: require a valid rejectControl, then perform the reject action through the API and
-		//       reflect the outcome in the view.
-		throw new Error('reject() not implemented');
+		if (this.submitting) {
+			return;
+		}
+
+		if (this.rejectControl.invalid || this.rejectControl.value.trim() === '') {
+			this.actionError = 'Please provide a reason for rejection';
+			this.rejectControl.setValue('');
+			return;
+		}
+
+		// Now everything is validated, submit the rejection
+		this.submitting = true;
+		this.actionError = '';
+
+		try {
+			const isoString = new Date().toISOString();
+			const reason = this.rejectControl.value.trim();
+			const result = await this.api.reject(this.session.user, this.id, reason, isoString);
+			console.log(result);
+			this.state = { status: 'loaded', data: result };
+		} catch (rejectionError) {
+			this.actionError = rejectionError instanceof Error ? rejectionError.message : 'Error Happend during Rejection';
+		} finally {
+			this.submitting = false;
+		}
 	}
 }
