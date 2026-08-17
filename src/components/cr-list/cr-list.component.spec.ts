@@ -30,4 +30,17 @@ describe('CrListComponent', () => {
 		expect(fixture.nativeElement.querySelector('.cr-list__empty')).not.toBeNull();
 		expect(fixture.nativeElement.querySelector('.cr-list__table')).toBeNull();
 	});
+
+	it('shows the correct filtered rows given a value', async () => {
+		const fixture = await render(users.approver);
+		fixture.componentInstance.statusFilter = 'PENDING_APPROVAL';
+
+		const filteredRows = fixture.componentInstance.visibleRows;
+		const isMatched = filteredRows.every((row) => {
+			return row.status === 'PENDING_APPROVAL';
+		});
+
+		expect(filteredRows.length).toBeGreaterThan(0);
+		expect(isMatched).toBe(true);
+	});
 });
