@@ -3,7 +3,7 @@ import { CrDetailComponent } from './cr-detail.component';
 import { SessionService } from '../../session/session.service';
 import { users } from '../../api/fixtures';
 import { ReqUser } from '../../models/cr.models';
-
+import { CrApiService } from '../../api/cr-api.service';
 const flush = () => new Promise((r) => setTimeout(r, 0));
 
 async function render(user: ReqUser, id: string): Promise<ComponentFixture<CrDetailComponent>> {
@@ -86,5 +86,31 @@ describe('CrDetailComponent', () => {
 		expect(sortedTimeline[0].at).toBe('2026-03-02T09:30:00.000Z');
 		expect(sortedTimeline[1].at).toBe('2026-03-02T10:00:00.000Z');
 		expect(sortedTimeline[2].at).toBe('2026-03-03T11:00:00.000Z');
+	});
+
+	it('handles unhappy approve path correctly', async () => {
+		const fixture = await render(users.approver, 'CR-1'); // approver; CR-1 is PENDING_APPROVAL
+		const api = TestBed.inject(CrApiService);
+		api.failNext = true;
+
+		await fixture.componentInstance.approve();
+
+		expect(fixture.componentInstance.actionError).toBe('Network error');
+		expect(fixture.componentInstance.submitting).toBe(false);
+	});
+
+	it('handles unhappy reject path correctly', async () => {
+		const fixture = await render(users.approver, 'CR-1'); // approver; CR-1 is PENDING_APPROVAL
+		const api = TestBed.inject(CrApiService);
+		api.failNext = true;
+		const genericRejection = 'CR Rejected';
+
+		fixture.componentInstance.rejectControl.setValue(genericRejection);
+
+		await fixture.componentInstance.reject();
+
+		expect(fixture.componentInstance.actionError).toBe('Network error');
+		expect(fixture.componentInstance.submitting).toBe(false);
+		expect(fixture.componentInstance.rejectControl.value).toBe(genericRejection);
 	});
 });

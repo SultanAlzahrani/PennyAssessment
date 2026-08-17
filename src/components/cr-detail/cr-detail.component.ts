@@ -122,7 +122,6 @@ export class CrDetailComponent implements OnInit {
 			const isoString = new Date().toISOString();
 			const reason = this.rejectControl.value.trim();
 			const result = await this.api.reject(this.session.user, this.id, reason, isoString);
-			console.log(result);
 			this.state = { status: 'loaded', data: result };
 		} catch (rejectionError) {
 			this.actionError = rejectionError instanceof Error ? rejectionError.message : 'Error Happend during Rejection';
