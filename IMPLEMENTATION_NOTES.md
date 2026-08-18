@@ -58,7 +58,7 @@ Task 4 - Assumptions:
 
 ## 6. Where I used AI
 
-- help with automatic commit messages (I always make sure it's comprehensive)
+- help with automatic commit messages (I always make sure it's comprehensive), and implementation notes about what i've done so far
 - research and general explanations about Angular's compontent (no code generation)
 - review some of the test cases i wrote
 
