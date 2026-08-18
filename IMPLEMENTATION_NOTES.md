@@ -1,8 +1,5 @@
 # Implementation Notes
 
-> Fill this in as part of your submission. 1–2 pages, bullet points are fine. Delete these
-> instructions before submitting.
-
 ## 1. What I changed
 
 <!-- Grouped by task: bugs fixed and features implemented (component + template). -->
@@ -38,9 +35,10 @@ template. -->
 
 ## 4. Testing strategy
 
-<!-- What you tested (component/DOM vs pure) and why; what you deliberately skipped given the budget. -->
-
--
+- Focused on component/DOM tests for the main user-facing behaviour, including status filtering, approval/rejection permissions, validation, and API success/failure states.
+- Prioritized the assessment requirements and important user flows rather than aiming for full code coverage.
+- skipped edge-cases due to the available time.
+- in addition to JEST, I tested smaller units by loggin it out (mainly to understand the behavior of new codes)
 
 ## 5. Assumptions
 

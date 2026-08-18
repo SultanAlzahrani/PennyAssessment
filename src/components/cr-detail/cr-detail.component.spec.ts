@@ -33,7 +33,7 @@ describe('CrDetailComponent', () => {
 	});
 
 	// my added tests
-	it('reject button not rendered for a read-only viewer on a pending CR', async () => {
+	it("doesn't render reject button for a read-only viewer on a pending CR", async () => {
 		const fixture = await render(users.viewer, 'CR-1'); // viewer: cr_r_o only; CR-1 is PENDING_APPROVAL
 		const rejectBtn: HTMLButtonElement = fixture.nativeElement.querySelector('.cr-actions__reject-btn');
 		expect(rejectBtn).toBeNull();
@@ -88,6 +88,28 @@ describe('CrDetailComponent', () => {
 		expect(sortedTimeline[2].at).toBe('2026-03-03T11:00:00.000Z');
 	});
 
+	it('approves a pending CR successfully', async () => {
+		const fixture = await render(users.approver, 'CR-1'); // approver; CR-1 is PENDING_APPROVAL
+
+		await fixture.componentInstance.approve();
+
+		expect(fixture.componentInstance.actionError).toBe('');
+		expect(fixture.componentInstance.submitting).toBe(false);
+		expect(fixture.componentInstance.detail?.status).toBe('APPROVED');
+	});
+
+	it('does not allow rejecting a pending CR without a reason given', async () => {
+		const fixture = await render(users.approver, 'CR-1'); // approver; CR-1 is PENDING_APPROVAL
+
+		const genericRejection = 'CR Rejected';
+		fixture.componentInstance.rejectControl.setValue(genericRejection);
+		await fixture.componentInstance.reject();
+
+		expect(fixture.componentInstance.actionError).toBe('');
+		expect(fixture.componentInstance.submitting).toBe(false);
+		expect(fixture.componentInstance.rejectControl.value).toBe(genericRejection);
+	});
+
 	it('handles unhappy approve path correctly', async () => {
 		const fixture = await render(users.approver, 'CR-1'); // approver; CR-1 is PENDING_APPROVAL
 		const api = TestBed.inject(CrApiService);
@@ -103,8 +125,8 @@ describe('CrDetailComponent', () => {
 		const fixture = await render(users.approver, 'CR-1'); // approver; CR-1 is PENDING_APPROVAL
 		const api = TestBed.inject(CrApiService);
 		api.failNext = true;
-		const genericRejection = 'CR Rejected';
 
+		const genericRejection = 'CR Rejected';
 		fixture.componentInstance.rejectControl.setValue(genericRejection);
 
 		await fixture.componentInstance.reject();
